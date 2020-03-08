@@ -1,10 +1,13 @@
 import React from 'react';
 import {
+  FlatList,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native'
+
+import FoodItem from './FoodItem';
 
 export default class FoodList extends React.Component {
   _onPress() {
@@ -19,7 +22,7 @@ export default class FoodList extends React.Component {
             {name: 'Nigiri'},
             {name: 'Sashimi'}
           ]}
-          renderItem={({item}) => <Text>{item.name}</Text>}
+          renderItem={({item}) => <FoodItem navigation={this.props.navigation} item={item}/>}
         />
       </View>
     );

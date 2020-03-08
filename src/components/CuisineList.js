@@ -14,7 +14,7 @@ export default class CuisineList extends Component {
             {name: 'Italian', origin: 'European'},
             {name: 'Sushi', origin: 'Japan'}
           ]}
-          renderItem={({item}) => <CuisineItem item={item}/>}
+          renderItem={({item}) => <CuisineItem navigation={this.props.navigation} item={item}/>}
         />
       </View>
     );

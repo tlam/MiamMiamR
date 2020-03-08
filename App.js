@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import CuisineList from './src/components/CuisineList';
+import FoodDetail from './src/components/FoodDetail';
 import FoodList from './src/components/FoodList';
 
 const Stack = createStackNavigator();
@@ -21,6 +22,10 @@ export default class MiamMiamRApp extends Component {
           <Stack.Screen
             name="FoodList"
             component={FoodList}
+          />
+          <Stack.Screen
+            name="FoodDetail"
+            component={FoodDetail}
           />
         </Stack.Navigator>
       </NavigationContainer>

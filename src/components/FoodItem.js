@@ -7,16 +7,18 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 
-export default class CuisineItem extends React.Component {
+export default class FoodItem extends React.Component {
 
   render() {
     const { navigation } = this.props;
     return (
       <TouchableWithoutFeedback
-        onPress={() => navigation.navigate('FoodList')}>
+        onPress={() => {
+          navigation.navigate('FoodDetail', {
+              item: this.props.item});
+        }}>
         <View>
           <Text style={styles.name}>{this.props.item.name}</Text>
-          <Text style={styles.item}>{this.props.item.origin}</Text>
         </View>
       </TouchableWithoutFeedback>
     );
