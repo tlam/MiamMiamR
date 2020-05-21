@@ -15,7 +15,8 @@ export default class FoodItem extends React.Component {
       <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate('FoodDetail', {
-              item: this.props.item});
+            item: this.props.item
+          });
         }}>
         <View>
           <Text style={styles.name}>{this.props.item.name}</Text>
