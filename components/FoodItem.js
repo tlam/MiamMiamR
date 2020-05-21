@@ -2,28 +2,27 @@ import React from 'react';
 import {
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
   View,
+  Image,
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native';
 
-export default class FoodItem extends React.Component {
+const FoodItem = ({ handlePress, food }) => {
 
-  render() {
-    const { navigation } = this.props;
-    return (
-      <TouchableWithoutFeedback
-        onPress={() => {
-          navigation.navigate('FoodDetail', {
-            item: this.props.item
-          });
-        }}>
-        <View>
-          <Text style={styles.name}>{this.props.item.name}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  }
+  return (
+    <TouchableOpacity onPress={handlePress}>
+      <View>
+        <Image
+          style={styles.image}
+          source={{
+            uri: food.source
+          }}
+        />
+        <Text style={styles.name}>{food.name}</Text>
+        <Text>{food.description}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -36,5 +35,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     height: 44,
   },
+  image: {
+    width: 50,
+    height: 50
+  }
 });
 
+export default FoodItem;

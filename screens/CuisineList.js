@@ -1,17 +1,37 @@
-import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FlatList, StyleSheet, Text, View, RefreshControl } from 'react-native';
 
 import CuisineItem from '../components/CuisineItem';
 
-
-const CUISINES = [{ "id": 2, "name": "Fish", "origin": "Sea", "foods": [{ "id": 2, "name": "Arctic Char", "description": "$21.45 / lb", "source": "" }, { "id": 1, "name": "Cod Fillet Pacific", "description": "$14.55 / lb", "source": "" }, { "id": 3, "name": "Haddock Fillet", "description": "$17.95 / lb", "source": "" }, { "id": 4, "name": "Halibut Fillet", "description": "$52.75 / lb", "source": "" }, { "id": 5, "name": "Pickerel Fillet", "description": "$23.75 / lb", "source": "" }] }, { "id": 9, "name": "French Wine", "origin": "France", "foods": [{ "id": 47, "name": "Bordeaux", "description": "", "source": "" }, { "id": 46, "name": "Sancerre", "description": "The white is Sauvignon Blanc. Red is Pinot Noir.", "source": "" }] }, { "id": 3, "name": "Italian", "origin": "European", "foods": [{ "id": 30, "name": "Cavatelli", "description": "Small pasta shells from eggless semolina dough that look like miniature hot dog buns", "source": "https://media.blueapron.com/stories/38/main_images/20140822-1717-6967-2252/Beauty_20-_20Cavatelli_20Pasta-0467_medium.jpg" }, { "id": 8, "name": "Farfalle", "description": "Butterfly looking", "source": "https://cdn.pixabay.com/photo/2014/10/20/22/04/farfalle-495747__340.jpg" }, { "id": 31, "name": "Gnocchi", "description": "Soft dough dumplings that may be made from semolina, ordinary wheat flour, egg, cheese, potato, breadcrumbs or cornmeal", "source": "https://cdn.pixabay.com/photo/2015/07/12/18/56/gnocchi-842305__340.jpg" }, { "id": 32, "name": "Pappardelle", "description": "Very large and broad pasta", "source": "http://food.fnr.sndimg.com/content/dam/images/food/fullset/2008/12/23/0/FNmag_Homemade-Pappardell_s4x3.jpg.rend.hgtvcom.616.462.suffix/1371589313664.jpeg" }, { "id": 27, "name": "Ravioli", "description": "Dumpling with fillings surrounded with two layers of pasta", "source": "https://cdn.pixabay.com/photo/2017/05/18/06/31/italian-2322684__340.jpg" }, { "id": 26, "name": "Rigatoni", "description": "Tube shape", "source": "https://cdn.pixabay.com/photo/2016/12/20/14/50/pasta-1920660__340.jpg" }, { "id": 9, "name": "Spaghetti", "description": "Long, thin and cylindrical", "source": "https://cdn.pixabay.com/photo/2017/11/08/22/18/spaghetti-2931846__340.jpg" }, { "id": 28, "name": "Tagliatelle", "description": "Long and flat ribbons", "source": "https://cdn.pixabay.com/photo/2016/08/30/21/48/noodles-1632153__340.jpg" }, { "id": 29, "name": "Tortelloni", "description": "Stuffed pasta, usually ricotta cheese", "source": "https://cdn.pixabay.com/photo/2017/07/13/11/10/tortellini-2500101__340.jpg" }] }, { "id": 6, "name": "Kebab", "origin": "Middle Eastern", "foods": [{ "id": 35, "name": "Jujeh Kabab", "description": "Iranian pieces of chicken marinated in minced onion and lemon juice with saffron then grilled over a fire", "source": "https://i.ytimg.com/vi/-d45_a6WGhU/hqdefault.jpg" }, { "id": 36, "name": "Kabab Bakhtiari", "description": "Iranian combination of Jujeh kabab and Kabab barg", "source": "http://www.tishineh.com/tour/Pictures/Item/682/8164.jpg" }, { "id": 34, "name": "Kabab Barg", "description": "Iranian fillets of beef tenderloin, lamb shank or chicken breast, onions and olive oil", "source": "http://www.chateaukabab.com/westisland/images/menu/Pictures%20Set%202_0030_31.jpg" }, { "id": 33, "name": "Kabab Koobideh", "description": "Iranian minced meat made from ground lamb, beef, or chicken,along with parsley and chopped onions", "source": "https://i.ytimg.com/vi/R1NSU5TqxU0/hqdefault.jpg" }] }, { "id": 4, "name": "Mexican", "origin": "Mexico", "foods": [{ "id": 18, "name": "Arepa", "description": "Pan fried ground corn dough", "source": "https://cdn.pixabay.com/photo/2016/05/08/15/02/arepa-1379236__340.jpg" }, { "id": 20, "name": "Burrito", "description": "Large tortilla full with rice, beans, veggies, meat, guacamole and other sauces, all rolled up as a big cylindrical tube.", "source": "https://cdn.pixabay.com/photo/2017/11/13/03/56/grilled-pineapple-pork-burrito-2944562__340.jpg" }, { "id": 10, "name": "Enchilada", "description": "Corn tortilla rolled around a filling and covered with a chili pepper sauce", "source": "https://cdn.pixabay.com/photo/2014/01/14/22/13/mexican-245240__340.jpg" }, { "id": 21, "name": "Esquites", "description": "Corn boiled and fried in button, served in a cup", "source": "" }, { "id": 11, "name": "Fajita", "description": "Any grilled meat usually served as a taco", "source": "https://cdn.pixabay.com/photo/2014/11/07/17/14/tortillas-520808__340.jpg" }, { "id": 22, "name": "Frijoles", "description": "Black bean soup with chorizo", "source": "" }, { "id": 19, "name": "Taco", "description": "Small wrap made of corn or wheat with a meat filling", "source": "https://cdn.pixabay.com/photo/2015/11/02/20/27/taco-1018962__340.jpg" }] }, { "id": 7, "name": "Ramen", "origin": "Japanese", "foods": [{ "id": 39, "name": "Miso", "description": "Miso", "source": "https://cdn.pixabay.com/photo/2015/05/13/16/16/noodle-soup-765706__340.jpg" }, { "id": 38, "name": "Shio", "description": "With salt", "source": "https://cdn.pixabay.com/photo/2015/09/25/11/08/ramen-957173__340.jpg" }, { "id": 37, "name": "Shoyu", "description": "Soy Sauce", "source": "https://cdn.pixabay.com/photo/2015/06/10/03/52/food-804387__340.jpg" }] }, { "id": 8, "name": "Roast", "origin": "Meat", "foods": [{ "id": 42, "name": "Bottom round", "description": "Rolled rump roast. Cheap cut from the outside of the back leg with marbling.", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }, { "id": 43, "name": "Chuck", "description": "Pot roast, Chuck roll. Cheap cut from the shoulder with marbling throughout.", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }, { "id": 44, "name": "Sirloin tip roast", "description": "Knuckle. Cheap cut taken right off the knee.", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }, { "id": 45, "name": "Top round", "description": "Inside round. Cut from inside the animals back leg. Usually used for deli roast beef", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }] }, { "id": 5, "name": "Steak", "origin": "Beef", "foods": [{ "id": 15, "name": "New York Strip", "description": "Bife de Chorizo, Strip, Manhattan, top sirloin, top loin. Usually boneless, fat on one edge of the steak.", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }, { "id": 17, "name": "Ribeye", "description": "Entrec\u00f4te, Ojo de Bife. Bone in or boneless. Lots of fat marbling the meat", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }, { "id": 12, "name": "Sirloin tip", "description": "Cut from the rear back portion of the animal", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }, { "id": 13, "name": "Striploin", "description": "Cut of beef steaks from the short loin from a cow and is more tender since it comes from the muscle that does little work", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }, { "id": 16, "name": "T-Bone", "description": "Porterhouse. Bone in. T-shaped bone with meat on both sides of the longer portion of the bone", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }, { "id": 14, "name": "Tenderloin", "description": "Filet mignon, Lomo. Boneless; the most expensive cut of steak. Cut thicker than most steaks", "source": "https://cdn.pixabay.com/photo/2017/01/31/20/33/beef-2027065__340.png" }] }, { "id": 1, "name": "Sushi", "origin": "Japanese", "foods": [{ "id": 6, "name": "Makizushi", "description": "Cylindrical roll with seaweed on the outside", "source": "https://cdn.pixabay.com/photo/2017/06/01/09/55/sushi-2362984__340.jpg" }, { "id": 7, "name": "Nigirizushi", "description": "Topping on oval shaped ball of rice", "source": "https://cdn.pixabay.com/photo/2017/01/06/16/46/sushi-1958247__340.jpg" }, { "id": 23, "name": "Sashimi", "description": "Slice of fish or shellfish served on its own", "source": "https://cdn.pixabay.com/photo/2017/01/06/08/56/tuna-1957234__340.jpg" }, { "id": 25, "name": "Temaki", "description": "Rolled into a cone with seaweed on the outside", "source": "https://www.comidaereceitas.com.br/images/stories/2013/09/temaki_salmao.jpg" }, { "id": 24, "name": "Uramakisushi", "description": "Cylindrical roll with rice on the outside and seaweed roll around the filling on the inside", "source": "https://cdn.pixabay.com/photo/2017/01/30/08/26/sushi-2020287__340.jpg" }] }];
+const URL = 'https://vinsetmets.herokuapp.com/cuisines/data.json';
 
 const CuisineList = ({ navigation }) => {
+  const [cuisines, setCuisines] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleFetchCuisines = useCallback(async () => {
+    const response = await fetch(URL);
+    if (response.ok) {
+      const cuisines = await response.json();
+      setCuisines(cuisines);
+    }
+  }, []);
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await handleFetchCuisines();
+    setIsRefreshing(false);
+  });
+
+  useEffect(() => {
+    handleFetchCuisines();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 50 }}>MiamMiamR</Text>
       <FlatList
-        data={CUISINES}
+        data={cuisines}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <CuisineItem
@@ -21,6 +41,9 @@ const CuisineList = ({ navigation }) => {
             cuisine={item}
           />
         )}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
       />
     </View>
   );

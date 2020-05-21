@@ -2,20 +2,24 @@ import React from 'react';
 import {
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
+  Image,
   View,
 } from 'react-native'
 
-export default class FoodDetail extends React.Component {
-
-  render() {
-    const { item } = this.props.route.params;
-    return (
-      <View>
-        <Text style={styles.name}>{item.name}</Text>
-      </View>
-    );
-  }
+const FoodDetail = ({ route, navigation }) => {
+  const { name, description, source } = route.params;
+  return (
+    <View>
+      <Image
+        style={styles.image}
+        source={{
+          uri: source
+        }}
+      />
+      <Text style={styles.name}>{name}</Text>
+      <Text>{description}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -28,5 +32,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     height: 44,
   },
+  image: {
+    width: 200,
+    height: 120
+  }
 });
 
+export default FoodDetail;

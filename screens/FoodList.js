@@ -2,7 +2,6 @@ import React from 'react';
 import {
   FlatList,
   StyleSheet,
-  Text,
   View,
 } from 'react-native'
 
@@ -11,13 +10,20 @@ import FoodItem from '../components/FoodItem';
 
 const FoodList = ({ route, navigation }) => {
   const { foods } = route.params;
-  console.warn(foods);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={foods}
-        renderItem={({ item }) => <FoodItem navigation={navigation} item={item} />}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <FoodItem
+            handlePress={() => {
+              navigation.navigate('FoodDetail', item);
+            }}
+            food={item}
+          />
+        )}
       />
     </View>
   );
